@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Stato premuto (pressed) -->
+    <item android:state_pressed="true">
+        <shape android:shape="oval">
+            <size android:width="48dp" android:height="48dp"/>
+            <solid android:color="#00796B"/> <!-- Verde scuro per stato premuto -->
+            <stroke android:width="2dp" android:color="#004D40"/> <!-- Contorno più scuro -->
+        </shape>
+    </item>
+
+    <!-- Stato normale (default) -->
+    <item>
+        <shape android:shape="oval">
+            <size android:width="48dp" android:height="48dp"/>
+            <solid android:color="#00BCD4"/> <!-- Colore azzurro chiaro -->
+            <stroke android:width="2dp" android:color="#0097A7"/> <!-- Contorno più scuro -->
+        </shape>
+    </item>
+
+</selector>
+

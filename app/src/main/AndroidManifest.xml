@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Permessi necessari -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.BODY_SENSORS"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:requestLegacyExternalStorage="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/logo_app"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_app"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ProgettoRuggeriLAM">
+
+
+        <!-- HomeActivity (attività principale con il tema ereditato dall'app) -->
+        <activity
+            android:name=".userinterface.HomeActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Altre attività senza tema specifico, erediteranno il tema dell'app -->
+        <activity
+            android:name=".userinterface.ChartsActivity"
+            android:exported="true">
+        </activity>
+
+
+        <activity
+            android:name=".userinterface.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".userinterface.HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".userinterface.HomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".userinterface.PhysicalActivityMonitorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".userinterface.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".userinterface.MapActivity"
+            android:exported="false" />
+
+
+
+        <!-- Receiver per la gestione di Activity Recognition e Geofence -->
+        <receiver
+            android:name=".receiver.ActivityRecognitionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.location.ACTIVITY_RECOGNITION" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver
+            android:name=".receiver.GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.progettoruggerilam.ACTION_GEOFENCE_EVENT" />
+            </intent-filter>
+        </receiver>
+
+
+        <service
+            android:name=".service.StepsCounterService"
+            android:exported="false"/>
+
+        <service android:name=".service.ActivityReminderService"
+            android:enabled="true"
+            android:exported="false"/>"
+
+
+
+        <service
+            android:name=".service.GeofenceForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+
+
+    </application>
+
+
+
+</manifest>

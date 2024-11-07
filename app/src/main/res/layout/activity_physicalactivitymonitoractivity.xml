@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <!-- TextView per mostrare lo stato dell'attività -->
+    <TextView
+        android:id="@+id/activityStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Incomincia a registrare un attivita!"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:layout_marginTop="20dp" />
+
+    <!-- Button per avviare il tracciamento -->
+    <Button
+        android:id="@+id/startTrackingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activityStatus"
+        android:layout_marginTop="20dp"
+        android:enabled="true"
+        android:layout_centerHorizontal="true"
+        android:text="Inizia registrazione attività"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF" />
+
+    <!-- Button per fermare il tracciamento -->
+    <Button
+        android:id="@+id/stopTrackingButton"
+        android:layout_width="wrap_content"
+        android:enabled="false"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startTrackingButton"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="Ferma registrazione attività"
+        android:backgroundTint="#F44336"
+        android:textColor="#FFFFFF" />
+
+    <!-- FloatingActionButton per tornare indietro -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_media_previous"
+        android:contentDescription="Back"
+        app:backgroundTint="#2196F3" />
+
+
+
+
+    <RadioGroup
+        android:id="@+id/choiceRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stopTrackingButton"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_drive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guidare" />
+
+        <RadioButton
+            android:id="@+id/radio_walk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Camminare" />
+
+        <RadioButton
+            android:id="@+id/radio_still"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fermo" />
+
+    </RadioGroup>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ProgettoRuggeriLAM</string>
+    <string name="steps_display">Passi: %1$d</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="action_about">Informazioni</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_center_location">Centrati su Posizione</string>
+    <string name="action_delete_markers">Elimina tutti i Marker</string>
+    <string name="action_delete_specific_marker">Elimina un Marker Specifico</string>
+
+</resources>
