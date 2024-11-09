@@ -2,7 +2,6 @@ package com.example.progettoruggerilam.userinterface
 
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.BitmapDrawable
@@ -24,7 +23,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import android.view.MotionEvent
 import android.view.View
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -223,7 +221,6 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
         }
     }
 
-
     private fun updateLocationMarker(geoPoint: GeoPoint) {
         if (!::mapView.isInitialized || mapView == null) {
             Log.e("MapActivity", "MapView non è stato inizializzato correttamente.")
@@ -260,7 +257,6 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
             Log.e("MapActivity", "Errore nell'aggiornamento del marker: ${e.message}")
         }
     }
-
 
     private fun checkGeofenceEntryExit(currentLocation: GeoPoint) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -373,7 +369,6 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
             }
         }
     }
-
 
     private fun removeMarkerFromMap(latitude: Double, longitude: Double) {
         if (!::mapView.isInitialized) {

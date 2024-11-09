@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.progettoruggerilam.R
 import com.example.progettoruggerilam.data.database.AppDatabase
-import com.example.progettoruggerilam.util.GeofenceEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

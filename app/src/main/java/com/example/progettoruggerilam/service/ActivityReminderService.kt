@@ -34,60 +34,6 @@ class ActivityReminderService : Service() {
         return null
     }
 
-    /*
-    private fun setupActivityTransitions() {
-        serviceScope.launch(Dispatchers.IO) {
-            val transitions = mutableListOf<ActivityTransition>()
-
-            val activities = listOf(
-                DetectedActivity.IN_VEHICLE,
-                DetectedActivity.ON_BICYCLE,
-                DetectedActivity.RUNNING,
-                DetectedActivity.STILL,
-                DetectedActivity.WALKING
-            )
-
-            for (activity in activities) {
-                transitions += ActivityTransition.Builder()
-                    .setActivityType(activity)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
-
-                transitions += ActivityTransition.Builder()
-                    .setActivityType(activity)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build()
-            }
-
-            val request = ActivityTransitionRequest(transitions)
-
-            // Creo il PendingIntent
-            val intent = Intent(this@ActivityMonitoringService, ActivityTransitionReceiver::class.java)
-            pendingIntent = PendingIntent.getBroadcast(
-                this@ActivityMonitoringService,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
-
-            // Richiesta aggiornamenti delle transizioni delle attività
-            try {
-                val task = ActivityRecognition.getClient(this@ActivityMonitoringService)
-                    .requestActivityTransitionUpdates(request, pendingIntent)
-
-                task.addOnSuccessListener {
-                    Log.d("ActivityMonitoringService", "Successfully registered for activity transitions")
-                }
-
-                task.addOnFailureListener { e: Exception ->
-                    Log.e("ActivityMonitoringService", "Failed to register for activity transitions", e)
-                }
-            } catch (e: SecurityException) {
-                Log.e("ActivityMonitoringService", "Permission not granted for activity recognition", e)
-            }
-        }
-    }
-    */
 
     private fun setNotification() {
         val workRequest = PeriodicWorkRequestBuilder<ActivityReminderWorker>(15, TimeUnit.MINUTES)
