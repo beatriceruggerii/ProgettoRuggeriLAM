@@ -7,5 +7,5 @@
     <string name="action_center_location">Centrati su Posizione</string>
     <string name="action_delete_markers">Elimina tutti i Marker</string>
     <string name="action_delete_specific_marker">Elimina un Marker Specifico</string>
-
+    <string name="action_view_geofences">Visualizza Geofences</string>
 </resources>

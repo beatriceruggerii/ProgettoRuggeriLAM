@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Nome del geofence su una linea separata -->
+    <TextView
+        android:id="@+id/tvGeofenceName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingBottom="4dp"/>
+
+    <!-- Raggio del geofence su una nuova linea -->
+    <TextView
+        android:id="@+id/tvGeofenceRadius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"/>
+
+    <!-- Contenitore per i bottoni Modifica e Rimuovi -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp">
+
+        <!-- Bottone Modifica, dimensionato più piccolo -->
+        <Button
+            android:id="@+id/btnEditGeofence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modifica"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <!-- Bottone Rimuovi, dimensionato più piccolo -->
+        <Button
+            android:id="@+id/btnDeleteGeofence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rimuovi"
+            android:textSize="12sp"
+            android:padding="4dp"/>
+    </LinearLayout>
+</LinearLayout>

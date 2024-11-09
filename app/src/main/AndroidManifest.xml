@@ -37,12 +37,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Altre attività senza tema specifico, erediteranno il tema dell'app -->
+
         <activity
             android:name=".userinterface.ChartsActivity"
             android:exported="true">
         </activity>
-
+        <activity android:name=".userinterface.GeofenceListActivity" />
 
         <activity
             android:name=".userinterface.SignUpActivity"

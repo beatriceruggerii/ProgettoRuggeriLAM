@@ -16,4 +16,10 @@
         android:title="@string/action_delete_specific_marker"
         android:orderInCategory="102"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_view_geofences"
+        android:title="Visualizza Geofence"
+        android:orderInCategory="103"
+        app:showAsAction="never" />
+
 </menu>

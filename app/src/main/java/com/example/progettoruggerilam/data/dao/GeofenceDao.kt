@@ -26,4 +26,7 @@ interface GeofenceDao {
 
     @Query("DELETE FROM geofences")
     suspend fun deleteAllGeofences()
+
+    @Update
+    suspend fun updateGeofence(geofence: GeofenceEntity)
 }
