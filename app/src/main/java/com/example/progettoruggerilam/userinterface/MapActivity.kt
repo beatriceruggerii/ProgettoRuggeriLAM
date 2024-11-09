@@ -12,7 +12,11 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -41,9 +45,10 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polygon
 import androidx.core.graphics.drawable.toBitmap
-import com.example.progettoruggerilam.service.GeofenceForegroundService
+import com.example.progettoruggerilam.util.MarkerDialogFragment
 
-class MapActivity : AppCompatActivity() {
+
+class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListener {
 
     private lateinit var mapView: MapView
     private lateinit var txtNotification: TextView
@@ -53,6 +58,7 @@ class MapActivity : AppCompatActivity() {
     private val db by lazy { AppDatabase.getDatabase(this) } // Database Room
     private var currentUserId: Long = -1 // ID dell'utente corrente
     private val insideGeofence: MutableSet<Long> = mutableSetOf()
+    private var currentZoomLevel: Double = 15.0
     private val CHANNEL_ID = "geofence_notifications"
     private val NOTIFICATION_ID = 1
     companion object {
@@ -103,7 +109,6 @@ class MapActivity : AppCompatActivity() {
         createNotificationChannel()
 
 
-
     }
 
     private fun setupMap() {
@@ -112,49 +117,19 @@ class MapActivity : AppCompatActivity() {
         mapView.controller.setZoom(15.0) // Zoom predefinito
     }
 
-    private fun showMarkerDialog(geoPoint: GeoPoint) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_geofence, null)
-        val nameInput = dialogView.findViewById<EditText>(R.id.geofenceName)
-        val radiusInput = dialogView.findViewById<EditText>(R.id.geofenceRadius)
-
-        AlertDialog.Builder(this)
-            .setTitle("Aggiungi un Marker")
-            .setView(dialogView)
-            .setPositiveButton("Salva") { _, _ ->
-                val name = nameInput.text.toString().trim()
-                val radius = radiusInput.text.toString().toDoubleOrNull()
-
-                // Controllo che il nome non sia vuoto e il raggio non sia nullo o zero
-                if (name.isBlank()) {
-                    Toast.makeText(this, "Il nome del marker è obbligatorio", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-
-                if (radius == null || radius <= 0) {
-                    Toast.makeText(this, "Inserisci un raggio valido maggiore di zero", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-
-                // Controlla se esiste già un marker con lo stesso nome
-                CoroutineScope(Dispatchers.IO).launch {
-                    val existingMarker = db.geofenceDao().getGeofenceByName(name)
-                    if (existingMarker != null) {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(this@MapActivity, "Esiste già un marker con questo nome", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        // Se non esiste, salva il marker e aggiungilo alla mappa
-                        saveMarkerToDatabase(name, radius, geoPoint)
-                        withContext(Dispatchers.Main) {
-                            addMarker(geoPoint, name, radius)
-                            showNotification("Marker aggiunto in posizione: ${geoPoint.latitude}, ${geoPoint.longitude}")
-                        }
-                    }
-                }
+    override fun onMarkerAdded(name: String, radius: Double, geoPoint: GeoPoint) {
+        CoroutineScope(Dispatchers.IO).launch {
+            saveMarkerToDatabase(name, radius, geoPoint)
+            withContext(Dispatchers.Main) {
+                addMarker(geoPoint, name, radius)
+                showNotification("Marker aggiunto in posizione: ${geoPoint.latitude}, ${geoPoint.longitude}")
             }
-            .setNegativeButton("Annulla", null)
-            .create()
-            .show()
+        }
+    }
+
+    private fun showMarkerDialog(geoPoint: GeoPoint) {
+        val dialog = MarkerDialogFragment.newInstance(geoPoint)
+        dialog.show(supportFragmentManager, "MarkerDialogFragment")
     }
 
     private fun addMarker(geoPoint: GeoPoint, name: String, radius: Double) {
@@ -248,34 +223,44 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
+
     private fun updateLocationMarker(geoPoint: GeoPoint) {
-        // Verifica se mapView è inizializzato
-        if (mapView == null) {
-            Log.e("MapActivity", "MapView non è stato inizializzato")
+        if (!::mapView.isInitialized || mapView == null) {
+            Log.e("MapActivity", "MapView non è stato inizializzato correttamente.")
             return
         }
 
-        // Rimuovi il marker precedente, se esistente
-        userLocationMarker?.let { mapView.overlays.remove(it) }
+        try {
+            // Rimuovi il marker precedente, se esistente
+            userLocationMarker?.let { mapView.overlays.remove(it) }
 
-        // Ridimensiona l'icona
-        val drawable = ContextCompat.getDrawable(this@MapActivity, R.drawable.ic_marker_red)
-        val bitmap = drawable?.toBitmap(50, 50) // Ridimensiona l'icona a 50x50 pixel
+            // Ridimensiona l'icona
+            val drawable = ContextCompat.getDrawable(this@MapActivity, R.drawable.ic_marker_red)
+            val bitmap = drawable?.toBitmap(50, 50) // Ridimensiona l'icona a 50x50 pixel
 
-        // Crea un nuovo marker con l'icona ridimensionata
-        userLocationMarker = Marker(mapView).apply {
-            position = geoPoint
-            title = "La tua posizione"
-            icon = BitmapDrawable(resources, bitmap) // Imposta l'icona ridimensionata
-            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            // Crea un nuovo marker con l'icona ridimensionata
+            userLocationMarker = Marker(mapView).apply {
+                position = geoPoint
+                title = "La tua posizione"
+                icon = BitmapDrawable(resources, bitmap) // Imposta l'icona ridimensionata
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            }
+
+            // Aggiungi il marker alla mappa e aggiorna la vista
+            mapView.overlays.add(userLocationMarker)
+
+            // Verifica se il livello di zoom corrente è diverso da quello impostato e centra senza cambiare zoom
+            if (mapView.zoomLevelDouble != currentZoomLevel) {
+                mapView.controller.setZoom(currentZoomLevel) // Mantiene il livello di zoom
+            }
+            mapView.controller.setCenter(geoPoint)
+
+            mapView.invalidate()
+        } catch (e: NullPointerException) {
+            Log.e("MapActivity", "Errore nell'aggiornamento del marker: ${e.message}")
         }
-
-        // Aggiungi il marker alla mappa e aggiorna la vista
-        mapView.overlays.add(userLocationMarker)
-        mapView.controller.setCenter(geoPoint)
-        mapView.controller.setZoom(15.0)
-        mapView.invalidate()
     }
+
 
     private fun checkGeofenceEntryExit(currentLocation: GeoPoint) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -361,10 +346,7 @@ class MapActivity : AppCompatActivity() {
                 deleteAllMarkers()
                 true
             }
-            R.id.action_delete_specific_marker -> {
-                deleteSpecificMarker()
-                true
-            }
+
             R.id.action_view_geofences -> {
                 startActivity(Intent(this, GeofenceListActivity::class.java))
                 true
@@ -373,63 +355,44 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-
     private fun deleteAllMarkers() {
-        // Rimuove tutti i marker dalla mappa
-        mapView.overlays.clear()
+        // Raccogli tutti i marker da rimuovere, escludendo `userLocationMarker`
+        val overlaysToRemove = mapView.overlays.filter { overlay ->
+            overlay is Marker && overlay != userLocationMarker
+        }
+
+        // Rimuovi gli overlay raccolti
+        mapView.overlays.removeAll(overlaysToRemove)
         mapView.invalidate()
 
-        // Rimuove tutti i marker dal database
+        // Rimuovi i marker dal database
         CoroutineScope(Dispatchers.IO).launch {
             db.geofenceDao().deleteAllGeofences()
             withContext(Dispatchers.Main) {
-                Toast.makeText(this@MapActivity, "Tutti i marker eliminati", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MapActivity, "Tutti i marker eliminati tranne la posizione corrente", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun deleteSpecificMarker() {
-        // Crea un AlertDialog per chiedere il nome del marker da eliminare
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Elimina Marker Specifico")
-
-        val input = EditText(this)
-        input.hint = "Nome del marker"
-        builder.setView(input)
-
-        builder.setPositiveButton("Elimina") { dialog, _ ->
-            val markerName = input.text.toString()
-            if (markerName.isNotBlank()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val markerToDelete = db.geofenceDao().getGeofenceByName(markerName)
-                    if (markerToDelete != null) {
-                        db.geofenceDao().deleteGeofence(markerToDelete)
-                        withContext(Dispatchers.Main) {
-                            removeMarkerFromMap(markerToDelete.latitude, markerToDelete.longitude)
-                            Toast.makeText(this@MapActivity, "Marker eliminato: $markerName", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(this@MapActivity, "Marker non trovato", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-            dialog.dismiss()
-        }
-        builder.setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
-        builder.show()
-    }
 
     private fun removeMarkerFromMap(latitude: Double, longitude: Double) {
-        val iterator = mapView.overlays.iterator()
-        while (iterator.hasNext()) {
-            val overlay = iterator.next()
-            if (overlay is Marker && overlay.position.latitude == latitude && overlay.position.longitude == longitude) {
-                iterator.remove()
-                mapView.invalidate()
-                break
-            }
+        if (!::mapView.isInitialized) {
+            Log.e("MapActivity", "MapView non è stato inizializzato correttamente.")
+            return
+        }
+
+        // Trova l'overlay da rimuovere senza usare un iteratore
+        val overlayToRemove = mapView.overlays.find { overlay ->
+            overlay is Marker && overlay.position.latitude == latitude && overlay.position.longitude == longitude
+        }
+
+        // Rimuove l'overlay dalla mappa
+        if (overlayToRemove != null) {
+            mapView.overlays.remove(overlayToRemove)
+            Log.d("MapActivity", "Rimozione marker con lat: $latitude, long: $longitude")
+            mapView.postInvalidate() // Forza il re-render della mappa
+        } else {
+            Log.e("MapActivity", "Marker non trovato con lat: $latitude, long: $longitude")
         }
     }
 
@@ -439,5 +402,25 @@ class MapActivity : AppCompatActivity() {
             mapView.controller.animateTo(it.position)
         }
     }
+
+    private val geofenceRemovedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val latitude = intent.getDoubleExtra("latitude", 0.0)
+            val longitude = intent.getDoubleExtra("longitude", 0.0)
+
+            // Assicura che removeMarkerFromMap sia chiamato sul thread principale
+            Handler(Looper.getMainLooper()).post {
+                removeMarkerFromMap(latitude, longitude)
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intentFilter = IntentFilter("com.example.progettoruggerilam.GEOFENCE_REMOVED")
+        registerReceiver(geofenceRemovedReceiver, intentFilter)
+        Log.d("MapActivity", "GeofenceRemovedReceiver registrato")
+    }
+
 
 }

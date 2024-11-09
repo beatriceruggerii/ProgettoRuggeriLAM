@@ -9,6 +9,8 @@ class GeofenceRepository(
 ) {
     fun getAllGeofences(): Flow<List<GeofenceEntity>> = geofenceDao.getAllGeofences()
 
+    fun getGeofencesByUserId(userId: Long): Flow<List<GeofenceEntity>> = geofenceDao.getGeofencesByUserId(userId)
+
     suspend fun insertGeofence(geofence: GeofenceEntity) {
         geofenceDao.insertGeofence(geofence)
     }
@@ -20,4 +22,12 @@ class GeofenceRepository(
     suspend fun deleteAllGeofences() {
         geofenceDao.deleteAllGeofences()
     }
+
+    suspend fun updateGeofence(geofence: GeofenceEntity) {
+        geofenceDao.updateGeofence(geofence)
+    }
+
+    suspend fun getGeofenceById(id: Int): GeofenceEntity? = geofenceDao.getGeofenceById(id)
+
+    suspend fun getGeofenceByName(name: String): GeofenceEntity? = geofenceDao.getGeofenceByName(name)
 }

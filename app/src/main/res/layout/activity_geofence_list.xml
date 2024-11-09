@@ -29,4 +29,25 @@
         android:textSize="14sp"
         android:padding="8dp"
         android:layout_marginTop="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:indeterminate="true"/>
+
+    <TextView
+        android:id="@+id/loadingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:text="Rimuovendo il marker..."
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
+
+
 </LinearLayout>

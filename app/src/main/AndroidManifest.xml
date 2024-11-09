@@ -66,13 +66,6 @@
 
 
         <!-- Receiver per la gestione di Activity Recognition e Geofence -->
-        <receiver
-            android:name=".receiver.ActivityRecognitionReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.location.ACTIVITY_RECOGNITION" />
-            </intent-filter>
-        </receiver>
 
 
         <receiver

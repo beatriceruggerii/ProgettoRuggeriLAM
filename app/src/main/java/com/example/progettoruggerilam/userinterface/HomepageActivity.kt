@@ -69,11 +69,7 @@ class HomepageActivity : AppCompatActivity() {
                 startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
-            R.id.action_about -> {
-                // Mostra un dialogo con le informazioni
-                Toast.makeText(this, "Informazioni sull'app", Toast.LENGTH_SHORT).show()
-                true
-            }
+
             R.id.action_logout -> {
                 // Esegui il logout e torna alla schermata di login
                 startActivity(Intent(this, HomeActivity::class.java))
