@@ -112,7 +112,7 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
     private fun setupMap() {
         Configuration.getInstance().load(applicationContext, getPreferences(MODE_PRIVATE))
         mapView.setMultiTouchControls(true)
-        mapView.controller.setZoom(15.0) // Zoom predefinito
+        mapView.controller.setZoom(15.0)
     }
 
     override fun onMarkerAdded(name: String, radius: Double, geoPoint: GeoPoint) {
@@ -139,9 +139,9 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
 
         val circle = Polygon()
         circle.points = Polygon.pointsAsCircle(geoPoint, radius)
-        circle.fillPaint.color = 0x4000FF00  // Colore di riempimento con opacità
-        circle.outlinePaint.color = 0xFF00FF00.toInt()  // Colore del contorno
-        circle.outlinePaint.strokeWidth = 2.0f  // Larghezza del contorno
+        circle.fillPaint.color = 0x4000FF00
+        circle.outlinePaint.color = 0xFF00FF00.toInt()
+        circle.outlinePaint.strokeWidth = 2.0f
 
         mapView.overlays.add(circle)
         mapView.invalidate()
@@ -231,7 +231,6 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
             // Rimuovi il marker precedente, se esistente
             userLocationMarker?.let { mapView.overlays.remove(it) }
 
-            // Ridimensiona l'icona
             val drawable = ContextCompat.getDrawable(this@MapActivity, R.drawable.ic_marker_red)
             val bitmap = drawable?.toBitmap(50, 50) // Ridimensiona l'icona a 50x50 pixel
 
@@ -239,16 +238,15 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
             userLocationMarker = Marker(mapView).apply {
                 position = geoPoint
                 title = "La tua posizione"
-                icon = BitmapDrawable(resources, bitmap) // Imposta l'icona ridimensionata
+                icon = BitmapDrawable(resources, bitmap)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             }
 
-            // Aggiungi il marker alla mappa e aggiorna la vista
             mapView.overlays.add(userLocationMarker)
 
             // Verifica se il livello di zoom corrente è diverso da quello impostato e centra senza cambiare zoom
             if (mapView.zoomLevelDouble != currentZoomLevel) {
-                mapView.controller.setZoom(currentZoomLevel) // Mantiene il livello di zoom
+                mapView.controller.setZoom(currentZoomLevel)
             }
             mapView.controller.setCenter(geoPoint)
 
@@ -282,16 +280,14 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
     }
 
     private fun sendGeofenceNotification(message: String) {
-        // Verifica il permesso per le notifiche
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // Richiede il permesso se non è stato concesso
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_NOTIFICATION_PERMISSION)
             return
         }
 
         // Crea e mostra la notifica
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)  // Usa un'icona appropriata per la notifica
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Geofence Alert")
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -305,10 +301,8 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permesso concesso: mostra la notifica
                 sendGeofenceNotification("Sei entrato nell'area di interesse!") // Oppure il messaggio appropriato
             } else {
-                // Permesso negato: mostra un messaggio o gestisci il caso
                 showNotification("Permesso per le notifiche non concesso")
             }
         }
@@ -352,16 +346,13 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
     }
 
     private fun deleteAllMarkers() {
-        // Raccogli tutti i marker da rimuovere, escludendo `userLocationMarker`
         val overlaysToRemove = mapView.overlays.filter { overlay ->
             overlay is Marker && overlay != userLocationMarker
         }
 
-        // Rimuovi gli overlay raccolti
         mapView.overlays.removeAll(overlaysToRemove)
         mapView.invalidate()
 
-        // Rimuovi i marker dal database
         CoroutineScope(Dispatchers.IO).launch {
             db.geofenceDao().deleteAllGeofences()
             withContext(Dispatchers.Main) {
@@ -376,16 +367,14 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
             return
         }
 
-        // Trova l'overlay da rimuovere senza usare un iteratore
         val overlayToRemove = mapView.overlays.find { overlay ->
             overlay is Marker && overlay.position.latitude == latitude && overlay.position.longitude == longitude
         }
 
-        // Rimuove l'overlay dalla mappa
         if (overlayToRemove != null) {
             mapView.overlays.remove(overlayToRemove)
             Log.d("MapActivity", "Rimozione marker con lat: $latitude, long: $longitude")
-            mapView.postInvalidate() // Forza il re-render della mappa
+            mapView.postInvalidate()
         } else {
             Log.e("MapActivity", "Marker non trovato con lat: $latitude, long: $longitude")
         }
@@ -403,7 +392,6 @@ class MapActivity : AppCompatActivity() , MarkerDialogFragment.MarkerDialogListe
             val latitude = intent.getDoubleExtra("latitude", 0.0)
             val longitude = intent.getDoubleExtra("longitude", 0.0)
 
-            // Assicura che removeMarkerFromMap sia chiamato sul thread principale
             Handler(Looper.getMainLooper()).post {
                 removeMarkerFromMap(latitude, longitude)
             }

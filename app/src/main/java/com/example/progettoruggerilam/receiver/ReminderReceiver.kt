@@ -1,4 +1,3 @@
-// ReminderReceiver.kt
 package com.example.progettoruggerilam.receiver
 
 import android.content.BroadcastReceiver
