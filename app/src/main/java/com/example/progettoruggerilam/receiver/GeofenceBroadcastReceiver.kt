@@ -15,7 +15,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val TAG = "GeofenceReceiver"
 
     override fun onReceive(context: Context, intent: Intent) {
-        // Ottieni l'evento di Geofencing dall'intent
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
         // Verifica se l'evento è null o se ha errori
