@@ -24,7 +24,6 @@ class ActivityReminderService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        //setupActivityTransitions()
         setNotification()
         setOneNotification()
         Log.w("ATTIVAZIONE SERVICE", "ATTIVAZIONE SERVICE !!!") // stampa controllo

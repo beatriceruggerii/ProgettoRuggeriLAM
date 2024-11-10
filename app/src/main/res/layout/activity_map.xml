@@ -7,9 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".userinterface.MapActivity">
 
-    <!-- Osmdroid MapView -->
-
-
     <!-- TextView per mostrare messaggi di notifica all'utente -->
     <org.osmdroid.views.MapView
         android:id="@+id/map"

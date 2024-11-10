@@ -20,10 +20,6 @@ class ActivityRecordRepository(private val activityRecordDao: ActivityRecordDao)
         return activityRecordDao.getRecordsByUserAndDate(userId, startDate, endDate)
     }
 
-    suspend fun update(activityRecord: ActivityRecord) {
-        activityRecordDao.update(activityRecord)
-    }
-
     suspend fun deleteUserAccountById(userId: Long) {
         activityRecordDao.deleteUserById(userId)
     }
@@ -32,8 +28,5 @@ class ActivityRecordRepository(private val activityRecordDao: ActivityRecordDao)
         return activityRecordDao.getActivitiesByDateAndUser(date, userId)
     }
 
-    suspend fun getOngoingActivity(userId: Long): ActivityRecord? {
-        return activityRecordDao.getOngoingActivity(userId)
-    }
 
 }

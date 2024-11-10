@@ -5,10 +5,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- FloatingActionButton per tornare indietro -->
-
-    <!-- Layout per i grafici -->
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/backBtn"
         android:layout_width="wrap_content"

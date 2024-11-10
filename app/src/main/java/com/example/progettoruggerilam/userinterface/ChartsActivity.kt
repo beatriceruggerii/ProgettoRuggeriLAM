@@ -1,7 +1,6 @@
 package com.example.progettoruggerilam.userinterface
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -10,7 +9,6 @@ import com.example.progettoruggerilam.viewmodel.ActivityViewModel
 import com.example.progettoruggerilam.R
 import com.example.progettoruggerilam.repository.ActivityRecordRepository
 import com.example.progettoruggerilam.data.database.AppDatabase
-import com.example.progettoruggerilam.service.ActivityReminderService
 import com.example.progettoruggerilam.viewmodel.ActivityViewModelFactory
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
@@ -44,7 +42,7 @@ class ChartsActivity : AppCompatActivity() {
 
 
         backButton.setOnClickListener {
-            finish() // Torna alla Homepage
+            finish()
         }
 
         // Mappa dei colori per ciascun tipo di attività

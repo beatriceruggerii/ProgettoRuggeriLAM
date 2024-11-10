@@ -22,8 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProgettoRuggeriLAM">
 
-
-        <!-- HomeActivity (attività principale con il tema ereditato dall'app) -->
         <activity
             android:name=".userinterface.HomeActivity"
             android:exported="true"
@@ -61,10 +59,6 @@
             android:exported="false" />
 
 
-
-        <!-- Receiver per la gestione di Activity Recognition e Geofence -->
-
-
         <receiver
             android:name=".receiver.GeofenceBroadcastReceiver"
             android:enabled="true"
@@ -88,10 +82,7 @@
             android:exported="false"
             android:foregroundServiceType="location" />
 
-
-
     </application>
-
 
 
 </manifest>
